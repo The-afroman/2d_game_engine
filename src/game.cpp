@@ -3,20 +3,22 @@
 #include <SDL2/SDL_image.h>
 #include <glm/glm.hpp>
 #include "game.h"
+#include "logger.h"
 
 Game::Game() {
     isRunning = false;
-    std::cout << "Game obj constructed" << std::endl;
+    Logger::info("Game obj constructed");
+    Logger::err("example error");
 }
 
 Game::~Game() {
-    std::cout << "Game obj destroyed" << std::endl;
+    Logger::info("Game obj destroyed");
 }
 
 void Game::initialize() {
     // init sdl
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
-        std::cerr << "Error init SDL2" << std::endl;
+        Logger::err("Error init SDL2");
         return;
     }
 
@@ -25,10 +27,10 @@ void Game::initialize() {
         "proto game engine",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         800, 600,
-        SDL_WINDOW_BORDERLESS //| SDL_WINDOW_FULLSCREEN | SDL_WINDOW_ALLOW_HIGHDPI
+        SDL_WINDOW_ALLOW_HIGHDPI
     );
     if (!window) {
-        std::cerr << "Error initializing SDL2 window" << std::endl;
+        Logger::err("Error initializing SDL2 window");
     }
 
     // initialize renderer
@@ -38,7 +40,7 @@ void Game::initialize() {
         SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
     );
     if (!renderer) {
-        std::cerr << "Error initializing SDL2 Renderer" << std::endl;
+        Logger::err("Error initializing SDL2 Renderer");
     }
     isRunning = true;
 
