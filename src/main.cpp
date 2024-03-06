@@ -6,7 +6,7 @@
 #include <glm/glm.hpp>
 #include <imgui/imgui.h>
 #include <sol/sol.hpp>
-#include "game.h"
+#include "Game/game.h"
 
 int main(int argc, char* argv[]) {
     // while(true) {
