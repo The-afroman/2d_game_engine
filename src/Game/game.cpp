@@ -78,16 +78,7 @@ void Game::procInput() {
     }
 }
 
-void Game::update() {
-    // cap game loop update to MAX_FPS
-    Uint32 ticksDelay = MS_PER_FRAME - (SDL_GetTicks() - prevFrameMillisecs);
-    if (ticksDelay > 0 && ticksDelay <= MS_PER_FRAME) {
-        SDL_Delay(ticksDelay);
-    }
-    deltaTime = static_cast<double>(SDL_GetTicks()- prevFrameMillisecs) / 1000.0;
-    
-    prevFrameMillisecs = SDL_GetTicks();
-    
+void Game::updatePlayer() {
     int windowX;
     int windowY;
     SDL_GetWindowSize(window, &windowX, &windowY);
@@ -107,6 +98,19 @@ void Game::update() {
     }
     playerPos.x += playerVel.x * deltaTime;
     playerPos.y += playerVel.y * deltaTime;
+}
+
+void Game::update() {
+    // cap game loop update to MAX_FPS
+    Uint32 ticksDelay = MS_PER_FRAME - (SDL_GetTicks() - prevFrameMillisecs);
+    if (ticksDelay > 0 && ticksDelay <= MS_PER_FRAME) {
+        SDL_Delay(ticksDelay);
+    }
+    deltaTime = static_cast<double>(SDL_GetTicks()- prevFrameMillisecs) / 1000.0;
+    
+    prevFrameMillisecs = SDL_GetTicks();
+    
+    updatePlayer();
     
 }
 

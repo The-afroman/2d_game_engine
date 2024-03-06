@@ -24,5 +24,6 @@ class Game {
         void update();
         void render();
         void destroy();
+        void updatePlayer();
 };
 #endif
