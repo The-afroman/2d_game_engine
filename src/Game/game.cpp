@@ -55,11 +55,11 @@ void Game::run() {
     }
 }
 
-glm::vec2 playerPos;
-glm::vec2 playerVel;
+// glm::vec2 playerPos;
+// glm::vec2 playerVel;
 void Game::setup() {
-    playerPos = glm::vec2(10.0, 15.0);
-    playerVel = glm::vec2(270, 310);
+    // playerPos = glm::vec2(10.0, 15.0);
+    // playerVel = glm::vec2(270, 310);
 }
 
 void Game::procInput() {
@@ -79,25 +79,25 @@ void Game::procInput() {
 }
 
 void Game::updatePlayer() {
-    int windowX;
-    int windowY;
-    SDL_GetWindowSize(window, &windowX, &windowY);
-    if (playerPos.x+32 > windowX) {
-        playerVel.x *= -1;
-        playerPos.x = windowX-32;
-    } else if (playerPos.x < 0) {
-        playerVel.x *= -1;
-        playerPos.x = 0;
-    }
-    if (playerPos.y+32 > windowY) {
-        playerPos.y = windowY-32;
-        playerVel.y *= -1;
-    } else if (playerPos.y < 0) {
-        playerPos.y = 0;
-        playerVel.y *= -1;
-    }
-    playerPos.x += playerVel.x * deltaTime;
-    playerPos.y += playerVel.y * deltaTime;
+    // int windowX;
+    // int windowY;
+    // SDL_GetWindowSize(window, &windowX, &windowY);
+    // if (playerPos.x+32 > windowX) {
+    //     playerVel.x *= -1;
+    //     playerPos.x = windowX-32;
+    // } else if (playerPos.x < 0) {
+    //     playerVel.x *= -1;
+    //     playerPos.x = 0;
+    // }
+    // if (playerPos.y+32 > windowY) {
+    //     playerPos.y = windowY-32;
+    //     playerVel.y *= -1;
+    // } else if (playerPos.y < 0) {
+    //     playerPos.y = 0;
+    //     playerVel.y *= -1;
+    // }
+    // playerPos.x += playerVel.x * deltaTime;
+    // playerPos.y += playerVel.y * deltaTime;
 }
 
 void Game::update() {
@@ -119,22 +119,22 @@ void Game::render() {
     SDL_RenderClear(renderer);
     // TODO: render game here
 
-    SDL_Rect dstrect = {
-        static_cast<int>(playerPos.x),
-        static_cast<int>(playerPos.y),
-        32,
-        32
-    };
+    // SDL_Rect dstrect = {
+    //     static_cast<int>(playerPos.x),
+    //     static_cast<int>(playerPos.y),
+    //     32,
+    //     32
+    // };
 
-    // SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    // SDL_RenderFillRect(renderer, &rect);
+    // // SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    // // SDL_RenderFillRect(renderer, &rect);
     
-    SDL_Surface* surface = IMG_Load("./assets/images/tank-tiger-right.png");
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_FreeSurface(surface);
+    // SDL_Surface* surface = IMG_Load("./assets/images/tank-tiger-right.png");
+    // SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+    // SDL_FreeSurface(surface);
 
-    SDL_RenderCopy(renderer, texture, NULL, &dstrect);
-    SDL_DestroyTexture(texture);
+    // SDL_RenderCopy(renderer, texture, NULL, &dstrect);
+    // SDL_DestroyTexture(texture);
     /*
     swaps back and front buffers, the back buffer is what
     we were drawing to prior to presenting
