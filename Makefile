@@ -3,7 +3,7 @@ cpp_std := -std=c++20
 compiler_flags := -Wall
 linker_flags := -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf -llua5.3
 include_path := -I"./libs/"
-src_files := $(wildcard src/*.cpp src/Game/*.cpp src/Logger/*.cpp)
+src_files := $(wildcard src/*.cpp src/Game/*.cpp src/Logger/*.cpp src/ECS/*.cpp src/Component/*.cpp src/Systems/*.cpp)
 obj_name := gameengine
 
 build:

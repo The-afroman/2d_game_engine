@@ -26,4 +26,15 @@ class Game {
         void destroy();
         void updatePlayer();
 };
+
+class Entity {
+    u_int32_t id;
+};
+
+struct TransformComponent {
+    glm::vec2 pos;
+    glm::vec2 scale;
+    glm::vec2 rotation;
+};
+
 #endif
