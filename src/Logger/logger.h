@@ -3,22 +3,18 @@
 #include <string>
 #include <vector>
 
-enum LogType {
-    INFO,
-    WARNING,
-    ERROR
-};
+enum LogType { INFO, WARNING, ERROR };
 
 struct LogEntry {
-    LogType type;
-    std::string message;
+  LogType type;
+  std::string message;
 };
 
 class Logger {
-    public:
-        static std::vector<LogEntry> allLogs;
-        static void info(const std::string message);
-        static void err(const std::string message);
+public:
+  static std::vector<LogEntry> allLogs;
+  static void info(const std::string message);
+  static void err(const std::string message);
 };
 
 #endif

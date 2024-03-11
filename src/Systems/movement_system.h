@@ -1,22 +1,24 @@
 #ifndef MOVEMENTSYSTEM_H
 #define MOVEMENTSYSTEM_H
 
-class MovementSystem: public System{
-    public: 
-        MovementSystem() {
-            //TODO: RequireComponent<TransformComponent>();
-            // ...
-        }
+#include "../ECS/ecs.h"
 
-        void Update(){
-            // TODO: 
-            // Loop through all entities the system is interested in
-            for (auto entity: getEntities()){
-                // TODO: 
-                // Loop through all entities 
-                // Update entity position 
-            }
-        }
-}
+class MovementSystem : public System {
+public:
+  MovementSystem() {
+    // TODO: RequireComponent<TransformComponent>();
+    //  ...
+  }
+
+  void Update() {
+    // TODO:
+    // Loop through all entities the system is interested in
+    for (auto entity : getEntities()) {
+      // TODO:
+      // Loop through all entities
+      // Update entity position
+    }
+  }
+};
 
 #endif
