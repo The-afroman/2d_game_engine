@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include <SDL2/SDL.h>
+#include "../ECS/ecs.h"
 
 const int MAX_FPS = 240;
 const int MS_PER_FRAME = 1000/MAX_FPS;
@@ -13,6 +14,7 @@ class Game {
         bool isRunning;
         SDL_Window* window;
         SDL_Renderer* renderer;
+        std::unique_ptr<Registry> registry;
 
     public:
         Game();
@@ -25,16 +27,7 @@ class Game {
         void render();
         void destroy();
         void updatePlayer();
-};
 
-class Entity {
-    u_int32_t id;
-};
-
-struct TransformComponent {
-    glm::vec2 pos;
-    glm::vec2 scale;
-    glm::vec2 rotation;
 };
 
 #endif

@@ -2,11 +2,13 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <glm/glm.hpp>
+#include <memory>
 #include "game.h"
 #include "../Logger/logger.h"
 
 Game::Game() {
     isRunning = false;
+    registry = std::make_unique<Registry>();
     Logger::info("Game obj constructed");
     Logger::err("example error");
 }
@@ -58,6 +60,8 @@ void Game::run() {
 // glm::vec2 playerPos;
 // glm::vec2 playerVel;
 void Game::setup() {
+    Entity tank = registry->createEntity();
+    Entity truck = registry->createEntity();
     // playerPos = glm::vec2(10.0, 15.0);
     // playerVel = glm::vec2(270, 310);
 }
