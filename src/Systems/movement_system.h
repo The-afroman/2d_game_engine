@@ -22,9 +22,9 @@ public:
       transform.pos.x += rbody.velocity.x * deltaTime;
       transform.pos.y += rbody.velocity.y * deltaTime;
 
-      Logger::info(std::to_string(entity.getID()) + " position is now " +
-                   std::to_string(transform.pos.x) + ", " +
-                   std::to_string(transform.pos.y));
+      // Logger::info(std::to_string(entity.getID()) + " position is now " +
+      //              std::to_string(transform.pos.x) + ", " +
+      //              std::to_string(transform.pos.y));
     }
   }
 };

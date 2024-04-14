@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include "../ECS/ecs.h"
+#include "../AssetMgr/AssetMgr.h"
 #include <SDL2/SDL.h>
 
 const int MAX_FPS = 240;
@@ -15,6 +16,7 @@ private:
   SDL_Window *window;
   SDL_Renderer *renderer;
   std::unique_ptr<Registry> registry;
+  std::unique_ptr<AssetMgr> assetMgr;
 
 public:
   Game();

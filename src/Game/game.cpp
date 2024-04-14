@@ -13,6 +13,7 @@
 Game::Game() {
   isRunning = false;
   registry = std::make_unique<Registry>();
+  assetMgr = std::make_unique<AssetMgr>();
   Logger::info("Game obj constructed");
   Logger::err("example error");
 }
@@ -59,10 +60,14 @@ void Game::setup() {
   registry->addSystem<MovementSystem>();
   registry->addSystem<RenderSystem>();
 
+  // add assets to AssetMgr
+  assetMgr->addTexture(renderer, "tank-image", "./assets/images/tank-tiger-right.png");
+
+  // create entity
   Entity tank = registry->createEntity();
-  tank.addComponent<TransformComponent>(glm::vec2(10.0, 15.0), glm::vec2(1.0, 1.0), 0.0);
+  tank.addComponent<TransformComponent>(glm::vec2(10.0, 10.0), glm::vec2(5.0, 5.0), 90.0);
   tank.addComponent<RigidBodyComponent>(glm::vec2(20.0, 30.0));
-  tank.addComponent<SpriteComponent>(10, 10);
+  tank.addComponent<SpriteComponent>("tank-image", 32, 32);
 }
 
 void Game::procInput() {
@@ -126,7 +131,7 @@ void Game::render() {
   SDL_SetRenderDrawColor(renderer, 55, 55, 55, 255);
   SDL_RenderClear(renderer);
   // ask systems to render
-  registry->getSystem<RenderSystem>().update(renderer);
+  registry->getSystem<RenderSystem>().update(renderer, assetMgr);
   // TODO: render game here
 
   // SDL_Rect dstrect = {
