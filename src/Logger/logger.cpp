@@ -31,7 +31,7 @@ void Logger::err(const std::string message) {
   std::string lmessage =
       std::format("\033[93mERR:  {} - {}\033[0m", datetime, message);
   LogEntry entry;
-  entry.type = INFO;
+  entry.type = ERROR;
   entry.message = lmessage;
   allLogs.push_back(entry);
   std::cerr << entry.message << std::endl;
