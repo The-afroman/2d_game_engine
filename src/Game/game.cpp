@@ -80,7 +80,7 @@ void Game::parseMap(std::string mapTextureStr, std::string mapFileStr,
       glm::vec2 pos = {posx, posy};
       pos *= scale;
       Logger::info(std::to_string(posx) + " " + std::to_string(posy));
-      tile.addComponent<SpriteComponent>(mapTextureStr, tileW, tileH,
+      tile.addComponent<SpriteComponent>(mapTextureStr, tileW, tileH, 0,
                                          column * tileW, row * tileH);
       tile.addComponent<TransformComponent>(pos, scale, 0.0);
       tileidx++;
@@ -111,7 +111,7 @@ void Game::loadLevel(int level) {
   tank.addComponent<TransformComponent>(glm::vec2(10.0, 10.0),
                                         glm::vec2(1.0, 1.0), 90.0);
   tank.addComponent<RigidBodyComponent>(glm::vec2(20.0, 30.0));
-  tank.addComponent<SpriteComponent>("tank-image", 32, 32);
+  tank.addComponent<SpriteComponent>("tank-image", 32, 32, 1);
 }
 
 // glm::vec2 playerPos;
@@ -177,7 +177,9 @@ void Game::update() {
 void Game::render() {
   SDL_SetRenderDrawColor(renderer, 55, 55, 55, 255);
   SDL_RenderClear(renderer);
-  // ask systems to render
+  // sort entites
+  registry->getSystem<RenderSystem>().sortByZIdx();
+  // render
   registry->getSystem<RenderSystem>().update(renderer, assetMgr);
   /*
   swaps back and front buffers, the back buffer is what

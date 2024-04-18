@@ -55,6 +55,8 @@ public:
 class System {
 private:
   Signature component_signature;
+
+protected:
   std::vector<Entity> entities;
 
 public:
@@ -123,7 +125,6 @@ private:
 public:
   Registry() = default;
   Entity createEntity();
-  void addEntityToSystem();
   void removeEntity();
   void update();
 

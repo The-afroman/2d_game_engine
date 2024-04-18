@@ -6,6 +6,7 @@
 #include "../ECS/ecs.h"
 #include "../Logger/logger.h"
 #include <SDL2/SDL.h>
+#include <algorithm>
 
 class RenderSystem : public System {
 public:
@@ -30,6 +31,13 @@ public:
                        &sprite.srcRect, &dstRect, transform.rotation, NULL,
                        SDL_FLIP_NONE);
     }
+  }
+
+  void sortByZIdx() {
+    std::sort(entities.begin(), entities.end(), [](Entity a, Entity b) {
+      return a.getComponent<SpriteComponent>().zIndex <
+             b.getComponent<SpriteComponent>().zIndex;
+    });
   }
 };
 
