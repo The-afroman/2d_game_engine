@@ -1,7 +1,9 @@
 #include "game.h"
+#include "../Components/animation_component.h"
 #include "../Components/rigid_body_component.h"
 #include "../Components/transform_component.h"
 #include "../Logger/logger.h"
+#include "../Systems/animation_system.h"
 #include "../Systems/movement_system.h"
 #include "../Systems/render_system.h"
 #include <SDL2/SDL.h>
@@ -92,10 +94,13 @@ void Game::loadLevel(int level) {
   // add the systems required by the game
   registry->addSystem<MovementSystem>();
   registry->addSystem<RenderSystem>();
+  registry->addSystem<AnimationSystem>();
 
   // add assets to AssetMgr
   assetMgr->addTexture(renderer, "tank-image",
                        "./assets/images/tank-tiger-right.png");
+  assetMgr->addTexture(renderer, "chopper-animation",
+                       "./assets/images/chopper.png");
   // load the tilemap
   assetMgr->addTexture(renderer, "jungle-tilemap",
                        "./assets/tilemaps/jungle.png");
@@ -109,9 +114,16 @@ void Game::loadLevel(int level) {
   // create entity
   Entity tank = registry->createEntity();
   tank.addComponent<TransformComponent>(glm::vec2(10.0, 10.0),
-                                        glm::vec2(1.0, 1.0), 90.0);
-  tank.addComponent<RigidBodyComponent>(glm::vec2(20.0, 30.0));
+                                        glm::vec2(1.0, 1.0), 0.0);
+  tank.addComponent<RigidBodyComponent>(glm::vec2(10.0, 10.0));
   tank.addComponent<SpriteComponent>("tank-image", 32, 32, 1);
+
+  Entity chopper = registry->createEntity();
+  chopper.addComponent<TransformComponent>(glm::vec2(50.0, 50.0),
+                                           glm::vec2(2.0, 2.0), 0.0);
+  chopper.addComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
+  chopper.addComponent<SpriteComponent>("chopper-animation", 32, 32, 1);
+  chopper.addComponent<AnimationComponent>(2, 10, true);
 }
 
 // glm::vec2 playerPos;
@@ -170,6 +182,7 @@ void Game::update() {
   registry->update();
   // ask systems to update
   registry->getSystem<MovementSystem>().update(deltaTime);
+  registry->getSystem<AnimationSystem>().update();
 
   updatePlayer();
 }
