@@ -1,9 +1,10 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "../ECS/ecs.h"
 #include "../AssetMgr/AssetMgr.h"
+#include "../ECS/ecs.h"
 #include <SDL2/SDL.h>
+#include <glm/glm.hpp>
 
 const int MAX_FPS = 240;
 const int MS_PER_FRAME = 1000 / MAX_FPS;
@@ -23,6 +24,10 @@ public:
   ~Game();
   void initialize();
   void run();
+  void parseMap(std::string mapTextureStr, std::string mapFileStr, int tileW,
+                int tileH, int maxTilesInTextureX, int mapWidth,
+                glm::vec2 scale);
+  void loadLevel(int level);
   void setup();
   void procInput();
   void update();

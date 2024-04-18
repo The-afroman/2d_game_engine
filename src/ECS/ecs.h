@@ -95,9 +95,9 @@ public:
 
   void set(int index, T obj) { data[index] = obj; }
 
-  T& get(int index) { return static_cast<T&>(data[index]); }
+  T &get(int index) { return static_cast<T &>(data[index]); }
 
-  T& operator[](unsigned int index) { return data[index]; }
+  T &operator[](unsigned int index) { return data[index]; }
 };
 
 class Registry {

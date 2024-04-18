@@ -35,7 +35,7 @@ Entity Registry::createEntity() {
 
 void Registry::update() {
   // TODO: remove entities which are in entitiesToRemove
-  for ( auto entity: entitiesToAdd ) {
+  for (auto entity : entitiesToAdd) {
     addEntityToSystems(entity);
   }
   entitiesToAdd.clear();
@@ -45,11 +45,11 @@ void Registry::addEntityToSystems(Entity entity) {
   const auto entityId = entity.getID();
   const auto entityCompSig = entityComponentSignatures[entityId];
 
-  for ( auto& system: systems) {
-    const auto& systemCompSig = system.second->getComponentSig();
-    
+  for (auto &system : systems) {
+    const auto &systemCompSig = system.second->getComponentSig();
+
     // check if entity has components required by system
-    if ( (systemCompSig & entityCompSig) == systemCompSig ) {
+    if ((systemCompSig & entityCompSig) == systemCompSig) {
       system.second->addEntity(entity);
     }
   }

@@ -1,14 +1,16 @@
 #include "game.h"
 #include "../Components/rigid_body_component.h"
 #include "../Components/transform_component.h"
+#include "../Logger/logger.h"
 #include "../Systems/movement_system.h"
 #include "../Systems/render_system.h"
-#include "../Logger/logger.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <fstream>
 #include <glm/glm.hpp>
 #include <iostream>
 #include <memory>
+#include <sstream>
 
 Game::Game() {
   isRunning = false;
@@ -53,22 +55,68 @@ void Game::run() {
   }
 }
 
-// glm::vec2 playerPos;
-// glm::vec2 playerVel;
-void Game::setup() {
+void Game::parseMap(std::string mapTextureStr, std::string mapFileStr,
+                    int tileW, int tileH, int maxTilesInTextureX, int mapWidth,
+                    glm::vec2 scale) {
+  std::ifstream mapFile;
+  mapFile.open(mapFileStr);
+  if (!mapFile.is_open()) {
+    Logger::err("Failed to open " + mapFileStr);
+    return;
+  }
+
+  std::string line;
+  int tileidx = 0;
+  while (std::getline(mapFile, line)) {
+    std::stringstream ss(line);
+    std::string tok;
+    while (std::getline(ss, tok, ',')) {
+      int tileNum = atoi(tok.c_str());
+      int column = tileNum % maxTilesInTextureX;
+      int row = tileNum / maxTilesInTextureX;
+      Entity tile = registry->createEntity();
+      float posx = static_cast<float>(((tileidx * tileW) % mapWidth));
+      float posy = static_cast<float>(((tileidx * tileW) / mapWidth) * tileW);
+      glm::vec2 pos = {posx, posy};
+      pos *= scale;
+      Logger::info(std::to_string(posx) + " " + std::to_string(posy));
+      tile.addComponent<SpriteComponent>(mapTextureStr, tileW, tileH,
+                                         column * tileW, row * tileH);
+      tile.addComponent<TransformComponent>(pos, scale, 0.0);
+      tileidx++;
+    }
+  }
+}
+
+void Game::loadLevel(int level) {
   // add the systems required by the game
   registry->addSystem<MovementSystem>();
   registry->addSystem<RenderSystem>();
 
   // add assets to AssetMgr
-  assetMgr->addTexture(renderer, "tank-image", "./assets/images/tank-tiger-right.png");
+  assetMgr->addTexture(renderer, "tank-image",
+                       "./assets/images/tank-tiger-right.png");
+  // load the tilemap
+  assetMgr->addTexture(renderer, "jungle-tilemap",
+                       "./assets/tilemaps/jungle.png");
+  glm::vec2 mapScale = {2.0, 2.0};
+  int tileSize = 32;
+  int maxTilesInTextureX = 10;
+  int mapWidth = 800;
 
+  parseMap("jungle-tilemap", "./assets/tilemaps/jungle.map", tileSize, tileSize,
+           maxTilesInTextureX, mapWidth, mapScale);
   // create entity
   Entity tank = registry->createEntity();
-  tank.addComponent<TransformComponent>(glm::vec2(10.0, 10.0), glm::vec2(5.0, 5.0), 90.0);
+  tank.addComponent<TransformComponent>(glm::vec2(10.0, 10.0),
+                                        glm::vec2(1.0, 1.0), 90.0);
   tank.addComponent<RigidBodyComponent>(glm::vec2(20.0, 30.0));
   tank.addComponent<SpriteComponent>("tank-image", 32, 32);
 }
+
+// glm::vec2 playerPos;
+// glm::vec2 playerVel;
+void Game::setup() { loadLevel(1); }
 
 void Game::procInput() {
   SDL_Event sdlEvent;
@@ -123,7 +171,6 @@ void Game::update() {
   // ask systems to update
   registry->getSystem<MovementSystem>().update(deltaTime);
 
-
   updatePlayer();
 }
 
@@ -132,24 +179,6 @@ void Game::render() {
   SDL_RenderClear(renderer);
   // ask systems to render
   registry->getSystem<RenderSystem>().update(renderer, assetMgr);
-  // TODO: render game here
-
-  // SDL_Rect dstrect = {
-  //     static_cast<int>(playerPos.x),
-  //     static_cast<int>(playerPos.y),
-  //     32,
-  //     32
-  // };
-
-  // // SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-  // // SDL_RenderFillRect(renderer, &rect);
-
-  // SDL_Surface* surface = IMG_Load("./assets/images/tank-tiger-right.png");
-  // SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-  // SDL_FreeSurface(surface);
-
-  // SDL_RenderCopy(renderer, texture, NULL, &dstrect);
-  // SDL_DestroyTexture(texture);
   /*
   swaps back and front buffers, the back buffer is what
   we were drawing to prior to presenting
