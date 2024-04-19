@@ -22,14 +22,14 @@ public:
       const auto transform = entity.getComponent<TransformComponent>();
       const auto sprite = entity.getComponent<SpriteComponent>();
 
-      SDL_Rect dstRect = {static_cast<int>(transform.pos.x),
-                          static_cast<int>(transform.pos.y),
-                          static_cast<int>(sprite.width * transform.scale.x),
-                          static_cast<int>(sprite.height * transform.scale.y)};
+      SDL_FRect dstRect = {
+          transform.pos.x, transform.pos.y,
+          static_cast<float>(sprite.width * transform.scale.x),
+          static_cast<float>(sprite.height * transform.scale.y)};
 
-      SDL_RenderCopyEx(renderer, assetMgr->getTexture(sprite.assetId),
-                       &sprite.srcRect, &dstRect, transform.rotation, NULL,
-                       SDL_FLIP_NONE);
+      SDL_RenderCopyExF(renderer, assetMgr->getTexture(sprite.assetId),
+                        &sprite.srcRect, &dstRect, transform.rotation, NULL,
+                        SDL_FLIP_NONE);
     }
   }
 
