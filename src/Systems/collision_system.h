@@ -39,8 +39,11 @@ public:
                             j->getComponent<BoxColliderComponent>().height)) {
           Logger::info("Collision of Entities: " + std::to_string(i->getID()) +
                        ", " + std::to_string(j->getID()));
-          i->getComponent<BoxColliderComponent>().hasCollided = true;
-          j->getComponent<BoxColliderComponent>().hasCollided = true;
+          i->getComponent<BoxColliderComponent>().isColliding = true;
+          j->getComponent<BoxColliderComponent>().isColliding = true;
+        } else {
+          i->getComponent<BoxColliderComponent>().isColliding = false;
+          j->getComponent<BoxColliderComponent>().isColliding = false;
         }
       }
     }

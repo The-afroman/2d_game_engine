@@ -14,6 +14,7 @@ private:
   Uint32 prevFrameMillisecs = 0;
   double deltaTime = 0.0;
   bool isRunning;
+  bool debugActive;
   SDL_Window *window;
   SDL_Renderer *renderer;
   std::unique_ptr<Registry> registry;

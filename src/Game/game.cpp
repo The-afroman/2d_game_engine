@@ -6,6 +6,7 @@
 #include "../Logger/logger.h"
 #include "../Systems/animation_system.h"
 #include "../Systems/collision_system.h"
+#include "../Systems/debug_collision_system.h"
 #include "../Systems/movement_system.h"
 #include "../Systems/render_system.h"
 #include <SDL2/SDL.h>
@@ -18,6 +19,7 @@
 
 Game::Game() {
   isRunning = false;
+  debugActive = false;
   registry = std::make_unique<Registry>();
   assetMgr = std::make_unique<AssetMgr>();
   Logger::info("Game obj constructed");
@@ -98,6 +100,7 @@ void Game::loadLevel(int level) {
   registry->addSystem<RenderSystem>();
   registry->addSystem<AnimationSystem>();
   registry->addSystem<CollisionSystem>();
+  registry->addSystem<DebugCollisionSystem>();
 
   // add assets to AssetMgr
   assetMgr->addTexture(renderer, "tank-image",
@@ -145,6 +148,8 @@ void Game::procInput() {
     case SDL_KEYDOWN:
       if (sdlEvent.key.keysym.sym == SDLK_ESCAPE) {
         isRunning = false;
+      } else if (sdlEvent.key.keysym.sym == SDLK_F3) {
+        debugActive ^= true;
       }
       break;
     }
@@ -200,6 +205,7 @@ void Game::render() {
   registry->getSystem<RenderSystem>().sortByZIdx();
   // render
   registry->getSystem<RenderSystem>().update(renderer, assetMgr);
+  registry->getSystem<DebugCollisionSystem>().update(renderer, debugActive);
   /*
   swaps back and front buffers, the back buffer is what
   we were drawing to prior to presenting
