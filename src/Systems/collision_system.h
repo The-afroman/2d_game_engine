@@ -29,14 +29,15 @@ public:
         }
 
         // check for collisions
-        if (isAABBCollision(i->getComponent<TransformComponent>().pos.x,
-                            i->getComponent<TransformComponent>().pos.y,
-                            i->getComponent<BoxColliderComponent>().width,
-                            i->getComponent<BoxColliderComponent>().height,
-                            j->getComponent<TransformComponent>().pos.x,
-                            j->getComponent<TransformComponent>().pos.y,
-                            j->getComponent<BoxColliderComponent>().width,
-                            j->getComponent<BoxColliderComponent>().height)) {
+        auto transformI = i->getComponent<TransformComponent>();
+        auto transformJ = j->getComponent<TransformComponent>();
+        auto colliderI = i->getComponent<BoxColliderComponent>();
+        auto colliderJ = j->getComponent<BoxColliderComponent>();
+        if (isAABBCollision(transformI.pos.x + colliderI.offset.x,
+                            transformI.pos.y + colliderI.offset.y,
+                            colliderI.width, colliderI.height, transformJ.pos.x,
+                            transformJ.pos.y, colliderJ.width,
+                            colliderJ.height)) {
           Logger::info("Collision of Entities: " + std::to_string(i->getID()) +
                        ", " + std::to_string(j->getID()));
           i->getComponent<BoxColliderComponent>().isColliding = true;
