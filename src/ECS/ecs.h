@@ -2,6 +2,7 @@
 #define ECS_H
 #include "../Logger/logger.h"
 #include <bitset>
+#include <deque>
 #include <memory>
 #include <set>
 #include <typeindex>
@@ -121,12 +122,15 @@ private:
   // entities to be added or removed at the end of the next Registry update()
   std::set<Entity> entitiesToAdd;
   std::set<Entity> entitiesToRemove;
+  std::deque<int> freeIds;
 
 public:
   Registry() = default;
-  Entity createEntity();
-  void removeEntity();
   void update();
+
+  // entity management
+  Entity createEntity();
+  void removeEntity(Entity entity);
 
   // component management
   template <typename TComp, typename... TArgs>
@@ -142,6 +146,7 @@ public:
   template <typename TSys> TSys &getSystem() const;
 
   void addEntityToSystems(Entity entity);
+  void removeEntityFromSystems(Entity entity);
 };
 
 // templates are implimented in the header

@@ -33,12 +33,20 @@ Entity Registry::createEntity() {
   return entity;
 }
 
+void Registry::removeEntity(Entity entity) { entitiesToRemove.insert(entity); }
+
 void Registry::update() {
   // TODO: remove entities which are in entitiesToRemove
   for (auto entity : entitiesToAdd) {
     addEntityToSystems(entity);
   }
   entitiesToAdd.clear();
+  for (auto entity : entitiesToRemove) {
+    removeEntityFromSystems(entity);
+    // make the removed entity id available
+    freeIds.push_back(entity.getID());
+  }
+  entitiesToRemove.clear();
 }
 
 void Registry::addEntityToSystems(Entity entity) {
@@ -53,4 +61,8 @@ void Registry::addEntityToSystems(Entity entity) {
       system.second->addEntity(entity);
     }
   }
+}
+
+void Registry::removeEntityFromSystems(Entity entity) {
+  entitiesToRemove.insert(entity);
 }
