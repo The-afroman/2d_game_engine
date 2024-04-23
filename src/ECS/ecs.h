@@ -45,6 +45,7 @@ public:
   // class keyword allows for implicit forward declaration of registry
   class Registry *registry;
 
+  void kill();
   // component management
   template <typename TComp, typename... TArgs>
   void addComponent(TArgs &&...args);

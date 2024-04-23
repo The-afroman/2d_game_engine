@@ -20,7 +20,9 @@ public:
 
   void update() {
     auto entities = getEntities();
-
+    if (entities.size() == 1) {
+      entities[0].getComponent<BoxColliderComponent>().isColliding = false;
+    }
     for (auto i = entities.begin(); i != entities.end(); i++) {
       for (auto j = i; j != entities.end(); j++) {
         // skip if comparing the same enitity
@@ -42,6 +44,8 @@ public:
                        ", " + std::to_string(j->getID()));
           i->getComponent<BoxColliderComponent>().isColliding = true;
           j->getComponent<BoxColliderComponent>().isColliding = true;
+          // TODO: should emit an event in here
+          // ...
         } else {
           i->getComponent<BoxColliderComponent>().isColliding = false;
           j->getComponent<BoxColliderComponent>().isColliding = false;

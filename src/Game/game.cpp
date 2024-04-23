@@ -23,7 +23,6 @@ Game::Game() {
   registry = std::make_unique<Registry>();
   assetMgr = std::make_unique<AssetMgr>();
   Logger::info("Game obj constructed");
-  Logger::err("example error");
 }
 
 Game::~Game() { Logger::info("Game obj destroyed"); }
@@ -36,9 +35,10 @@ void Game::initialize() {
   }
 
   // create the application window
+  Uint32 windowFlags = SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE |
+                       SDL_WINDOW_ALWAYS_ON_TOP;
   window = SDL_CreateWindow("proto game engine", SDL_WINDOWPOS_CENTERED,
-                            SDL_WINDOWPOS_CENTERED, 800, 600,
-                            SDL_WINDOW_ALLOW_HIGHDPI);
+                            SDL_WINDOWPOS_CENTERED, 800, 600, windowFlags);
   if (!window) {
     Logger::err("Error initializing SDL2 window");
   }
@@ -149,7 +149,7 @@ void Game::procInput() {
       if (sdlEvent.key.keysym.sym == SDLK_ESCAPE) {
         isRunning = false;
       } else if (sdlEvent.key.keysym.sym == SDLK_F3) {
-        debugActive ^= true;
+        debugActive = !debugActive;
       }
       break;
     }
