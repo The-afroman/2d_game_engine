@@ -1,8 +1,6 @@
 #ifndef EVENTBUS_H
 #define EVENTBUS_H
 
-class EventBus {
-
-};
+class EventBus {};
 
 #endif

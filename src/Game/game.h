@@ -1,7 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "../AssetMgr/AssetMgr.h"
+#include "../AssetMgr/asset_mgr.h"
 #include "../ECS/ecs.h"
 #include <SDL2/SDL.h>
 #include <glm/glm.hpp>
