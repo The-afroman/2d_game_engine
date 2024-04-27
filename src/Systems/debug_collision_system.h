@@ -1,14 +1,15 @@
 #ifndef DEBUGCOLLISIONSYSTEM_H
 #define DEBUGCOLLISIONSYSTEM_H
 
+#include <SDL2/SDL.h>
+
 #include "../Components/box_collider_component.h"
 #include "../Components/transform_component.h"
 #include "../ECS/ecs.h"
 #include "../Logger/logger.h"
-#include <SDL2/SDL.h>
 
 class DebugCollisionSystem : public System {
-public:
+ public:
   DebugCollisionSystem() {
     requireComponent<TransformComponent>();
     requireComponent<BoxColliderComponent>();

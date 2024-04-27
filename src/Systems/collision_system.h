@@ -4,10 +4,12 @@
 #include "../Components/box_collider_component.h"
 #include "../Components/transform_component.h"
 #include "../ECS/ecs.h"
+#include "../Events/collision_event.h"
+#include "../Events/event_bus.h"
 #include "../Logger/logger.h"
 
 class CollisionSystem : public System {
-public:
+ public:
   CollisionSystem() {
     requireComponent<TransformComponent>();
     requireComponent<BoxColliderComponent>();
@@ -18,7 +20,7 @@ public:
     return aX < bX + bW && aX + aW > bX && aY < bY + bH && aY + aH > bY;
   }
 
-  void update() {
+  void update(std::unique_ptr<EventBus> &eventBus) {
     auto entities = getEntities();
     if (entities.size() == 1) {
       entities[0].getComponent<BoxColliderComponent>().isColliding = false;
@@ -44,8 +46,7 @@ public:
                        ", " + std::to_string(j->getID()));
           i->getComponent<BoxColliderComponent>().isColliding = true;
           j->getComponent<BoxColliderComponent>().isColliding = true;
-          // TODO: should emit an event in here
-          // ...
+          eventBus->emitEvent<CollisionEvent>(*i, *j);
         } else {
           i->getComponent<BoxColliderComponent>().isColliding = false;
           j->getComponent<BoxColliderComponent>().isColliding = false;

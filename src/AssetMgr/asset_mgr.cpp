@@ -1,7 +1,9 @@
 #include "asset_mgr.h"
-#include "../Logger/logger.h"
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+
+#include "../Logger/logger.h"
 
 AssetMgr::AssetMgr() { Logger::info("AssetMgr created"); }
 

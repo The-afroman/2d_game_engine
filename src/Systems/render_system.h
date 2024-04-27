@@ -1,15 +1,17 @@
 #ifndef RENDERSYSTEM_H
 #define RENDERSYSTEM_H
 
+#include <SDL2/SDL.h>
+
+#include <algorithm>
+
 #include "../Components/sprite_component.h"
 #include "../Components/transform_component.h"
 #include "../ECS/ecs.h"
 #include "../Logger/logger.h"
-#include <SDL2/SDL.h>
-#include <algorithm>
 
 class RenderSystem : public System {
-public:
+ public:
   RenderSystem() {
     requireComponent<TransformComponent>();
     requireComponent<SpriteComponent>();

@@ -7,7 +7,7 @@
 #include "../Logger/logger.h"
 
 class MovementSystem : public System {
-public:
+ public:
   MovementSystem() {
     requireComponent<TransformComponent>();
     requireComponent<RigidBodyComponent>();

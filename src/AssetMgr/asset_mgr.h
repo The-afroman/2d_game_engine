@@ -2,15 +2,16 @@
 #define ASSETMGR_H
 
 #include <SDL2/SDL.h>
+
 #include <map>
 #include <string>
 
 class AssetMgr {
-private:
+ private:
   std::map<std::string, SDL_Texture *> textures;
 
   // TODO create map for fonts, audio
-public:
+ public:
   AssetMgr();
   ~AssetMgr();
 

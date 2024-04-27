@@ -1,7 +1,9 @@
 #include "ecs.h"
-#include "../Logger/logger.h"
+
 #include <algorithm>
 #include <vector>
+
+#include "../Logger/logger.h"
 
 int IComponent::nextID = 0;
 

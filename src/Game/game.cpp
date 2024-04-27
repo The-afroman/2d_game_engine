@@ -1,27 +1,32 @@
 #include "game.h"
-#include "../Components/animation_component.h"
-#include "../Components/box_collider_component.h"
-#include "../Components/rigid_body_component.h"
-#include "../Components/transform_component.h"
-#include "../Logger/logger.h"
-#include "../Systems/animation_system.h"
-#include "../Systems/collision_system.h"
-#include "../Systems/debug_collision_system.h"
-#include "../Systems/movement_system.h"
-#include "../Systems/render_system.h"
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+
 #include <fstream>
 #include <glm/glm.hpp>
 #include <iostream>
 #include <memory>
 #include <sstream>
 
+#include "../Components/animation_component.h"
+#include "../Components/box_collider_component.h"
+#include "../Components/rigid_body_component.h"
+#include "../Components/transform_component.h"
+#include "../Events/event_bus.h"
+#include "../Logger/logger.h"
+#include "../Systems/animation_system.h"
+#include "../Systems/collision_system.h"
+#include "../Systems/damage_system.h"
+#include "../Systems/debug_collision_system.h"
+#include "../Systems/movement_system.h"
+#include "../Systems/render_system.h"
 Game::Game() {
   isRunning = false;
   debugActive = false;
   registry = std::make_unique<Registry>();
   assetMgr = std::make_unique<AssetMgr>();
+  eventBus = std::make_unique<EventBus>();
   Logger::info("Game obj constructed");
 }
 
@@ -45,7 +50,7 @@ void Game::initialize() {
 
   // initialize renderer
   renderer = SDL_CreateRenderer(
-      window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+      window, -1, SDL_RENDERER_ACCELERATED /*| SDL_RENDERER_PRESENTVSYNC*/);
   if (!renderer) {
     Logger::err("Error initializing SDL2 Renderer");
   }
@@ -101,6 +106,7 @@ void Game::loadLevel(int level) {
   registry->addSystem<AnimationSystem>();
   registry->addSystem<CollisionSystem>();
   registry->addSystem<DebugCollisionSystem>();
+  registry->addSystem<DamageSystem>();
 
   // add assets to AssetMgr
   assetMgr->addTexture(renderer, "tank-image",
@@ -142,16 +148,16 @@ void Game::procInput() {
   SDL_Event sdlEvent;
   while (SDL_PollEvent(&sdlEvent)) {
     switch (sdlEvent.type) {
-    case SDL_QUIT:
-      isRunning = false;
-      break;
-    case SDL_KEYDOWN:
-      if (sdlEvent.key.keysym.sym == SDLK_ESCAPE) {
+      case SDL_QUIT:
         isRunning = false;
-      } else if (sdlEvent.key.keysym.sym == SDLK_F3) {
-        debugActive = !debugActive;
-      }
-      break;
+        break;
+      case SDL_KEYDOWN:
+        if (sdlEvent.key.keysym.sym == SDLK_ESCAPE) {
+          isRunning = false;
+        } else if (sdlEvent.key.keysym.sym == SDLK_F3) {
+          debugActive = !debugActive;
+        }
+        break;
     }
   }
 }
@@ -188,12 +194,17 @@ void Game::update() {
 
   prevFrameMillisecs = SDL_GetTicks();
 
+  // clear the subscriptions
+  eventBus->reset();
+  // subscribe events for all systems
+  registry->getSystem<DamageSystem>().subscribeToEvents(eventBus);
+
   // update the registry
   registry->update();
   // ask systems to update
   registry->getSystem<MovementSystem>().update(deltaTime);
   registry->getSystem<AnimationSystem>().update();
-  registry->getSystem<CollisionSystem>().update();
+  registry->getSystem<CollisionSystem>().update(eventBus);
 
   updatePlayer();
 }

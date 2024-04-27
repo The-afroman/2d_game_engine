@@ -11,7 +11,7 @@ struct LogEntry {
 };
 
 class Logger {
-public:
+ public:
   static std::vector<LogEntry> allLogs;
   static void info(const std::string message);
   static void err(const std::string message);
