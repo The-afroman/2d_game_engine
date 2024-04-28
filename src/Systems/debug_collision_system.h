@@ -15,13 +15,13 @@ class DebugCollisionSystem : public System {
     requireComponent<BoxColliderComponent>();
   }
 
-  void update(SDL_Renderer *renderer, bool debugActive) {
+  void update(SDL_Renderer *renderer, SDL_Rect &camera, bool debugActive) {
     if (debugActive) {
       for (auto entity : getEntities()) {
         auto transform = entity.getComponent<TransformComponent>();
         auto collider = entity.getComponent<BoxColliderComponent>();
-        SDL_FRect debugBox = {transform.pos.x + collider.offset.x,
-                              transform.pos.y + collider.offset.y,
+        SDL_FRect debugBox = {transform.pos.x + collider.offset.x - camera.x,
+                              transform.pos.y + collider.offset.y - camera.y,
                               static_cast<float>(collider.width),
                               static_cast<float>(collider.height)};
         if (collider.isColliding) {

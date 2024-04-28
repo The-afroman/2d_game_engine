@@ -17,7 +17,8 @@ class RenderSystem : public System {
     requireComponent<SpriteComponent>();
   }
 
-  void update(SDL_Renderer *renderer, std::unique_ptr<AssetMgr> &assetMgr) {
+  void update(SDL_Renderer *renderer, std::unique_ptr<AssetMgr> &assetMgr,
+              SDL_Rect &camera) {
     // TODO:
     // Loop through all entities the system is interested in
     for (auto entity : getEntities()) {
@@ -25,7 +26,7 @@ class RenderSystem : public System {
       const auto sprite = entity.getComponent<SpriteComponent>();
 
       SDL_FRect dstRect = {
-          transform.pos.x, transform.pos.y,
+          transform.pos.x - camera.x, transform.pos.y - camera.y,
           static_cast<float>(sprite.width * transform.scale.x),
           static_cast<float>(sprite.height * transform.scale.y)};
 

@@ -20,11 +20,17 @@ class Game {
   bool debugActive;
   SDL_Window *window;
   SDL_Renderer *renderer;
+  SDL_Rect camera;
+
   std::unique_ptr<Registry> registry;
   std::unique_ptr<AssetMgr> assetMgr;
   std::unique_ptr<EventBus> eventBus;
 
  public:
+  static int mapW;
+  static int mapH;
+  static int windowH;
+  static int windowW;
   Game();
   ~Game();
   void initialize();

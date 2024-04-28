@@ -18,12 +18,18 @@
 #include "../Events/keyboard_event.h"
 #include "../Logger/logger.h"
 #include "../Systems/animation_system.h"
+#include "../Systems/camera_system.h"
 #include "../Systems/collision_system.h"
 #include "../Systems/damage_system.h"
 #include "../Systems/debug_collision_system.h"
 #include "../Systems/keyboard_movement_system.h"
 #include "../Systems/movement_system.h"
 #include "../Systems/render_system.h"
+
+int Game::windowW;
+int Game::windowH;
+int Game::mapW;
+int Game::mapH;
 
 Game::Game() {
   isRunning = false;
@@ -44,10 +50,20 @@ void Game::initialize() {
   }
 
   // create the application window
-  Uint32 windowFlags = SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE |
-                       SDL_WINDOW_ALWAYS_ON_TOP;
-  window = SDL_CreateWindow("proto game engine", SDL_WINDOWPOS_CENTERED,
-                            SDL_WINDOWPOS_CENTERED, 800, 600, windowFlags);
+  SDL_DisplayMode displayMode;
+  SDL_GetCurrentDisplayMode(1, &displayMode);
+  windowW = displayMode.w;
+  windowH = displayMode.h;
+  Logger::info("displayW/H: " + std::to_string(displayMode.w) +
+               std::to_string(displayMode.h) + " windowW/H: " +
+               std::to_string(windowW) + std::to_string(windowH));
+  Uint32 windowFlags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALWAYS_ON_TOP |
+                       SDL_WINDOW_BORDERLESS | SDL_WINDOW_FULLSCREEN;
+  window =
+      SDL_CreateWindow("proto game engine", SDL_WINDOWPOS_CENTERED,
+                       SDL_WINDOWPOS_CENTERED, windowW, windowH, windowFlags);
+  int display = SDL_GetWindowDisplayIndex(window);
+
   if (!window) {
     Logger::err("Error initializing SDL2 window");
   }
@@ -58,6 +74,11 @@ void Game::initialize() {
   if (!renderer) {
     Logger::err("Error initializing SDL2 Renderer");
   }
+  camera.x = 0;
+  camera.y = 0;
+  camera.w = windowW;
+  camera.h = windowH;
+
   isRunning = true;
 }
 
@@ -112,6 +133,7 @@ void Game::loadLevel(int level) {
   registry->addSystem<DebugCollisionSystem>();
   registry->addSystem<DamageSystem>();
   registry->addSystem<KeyboardMovementSystem>();
+  registry->addSystem<CameraSystem>();
 
   // add assets to AssetMgr
   assetMgr->addTexture(renderer, "tank-image",
@@ -121,13 +143,14 @@ void Game::loadLevel(int level) {
   // load the tilemap
   assetMgr->addTexture(renderer, "jungle-tilemap",
                        "./assets/tilemaps/jungle.png");
-  glm::vec2 mapScale = {2.0, 2.0};
+  glm::vec2 mapScale = {4.0, 4.0};
   int tileSize = 32;
   int maxTilesInTextureX = 10;
-  int mapWidth = 800;
-
+  int mapWidthSrc = 800;
+  mapW = mapWidthSrc * mapScale.x;
+  mapH = 640 * mapScale.x;
   parseMap("jungle-tilemap", "./assets/tilemaps/jungle.map", tileSize, tileSize,
-           maxTilesInTextureX, mapWidth, mapScale);
+           maxTilesInTextureX, mapWidthSrc, mapScale);
   // create entity
   Entity tank = registry->createEntity();
   tank.addComponent<TransformComponent>(glm::vec2(10.0, 10.0),
@@ -137,6 +160,7 @@ void Game::loadLevel(int level) {
   tank.addComponent<BoxColliderComponent>(32, 32);
 
   Entity chopper = registry->createEntity();
+  chopper.addComponent<CameraComponent>();
   chopper.addComponent<TransformComponent>(glm::vec2(150.0, 150.0),
                                            glm::vec2(1.0, 1.0), 0.0);
   chopper.addComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
@@ -144,8 +168,8 @@ void Game::loadLevel(int level) {
   chopper.addComponent<BoxColliderComponent>(32, 32);
   chopper.addComponent<AnimationComponent>(2, 10, true);
   chopper.addComponent<KeyboardControlledComponent>(
-      glm::vec2(0.0, -20.0), glm::vec2(20.0, 0.0), glm::vec2(0.0, 20.0),
-      glm::vec2(-20.0, 0.0));
+      glm::vec2(0.0, -120.0), glm::vec2(120.0, 0.0), glm::vec2(0.0, 120.0),
+      glm::vec2(-120.0, 0.0));
 }
 
 // glm::vec2 playerPos;
@@ -213,6 +237,7 @@ void Game::update() {
   registry->update();
   // ask systems to update
   registry->getSystem<MovementSystem>().update(deltaTime);
+  registry->getSystem<CameraSystem>().update(camera);
   registry->getSystem<AnimationSystem>().update();
   registry->getSystem<CollisionSystem>().update(eventBus);
 
@@ -225,8 +250,9 @@ void Game::render() {
   // sort entites
   registry->getSystem<RenderSystem>().sortByZIdx();
   // render
-  registry->getSystem<RenderSystem>().update(renderer, assetMgr);
-  registry->getSystem<DebugCollisionSystem>().update(renderer, debugActive);
+  registry->getSystem<RenderSystem>().update(renderer, assetMgr, camera);
+  registry->getSystem<DebugCollisionSystem>().update(renderer, camera,
+                                                     debugActive);
   /*
   swaps back and front buffers, the back buffer is what
   we were drawing to prior to presenting
