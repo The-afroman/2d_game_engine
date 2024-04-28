@@ -11,16 +11,20 @@
 
 #include "../Components/animation_component.h"
 #include "../Components/box_collider_component.h"
+#include "../Components/keyboard_controlled_component.h"
 #include "../Components/rigid_body_component.h"
 #include "../Components/transform_component.h"
 #include "../Events/event_bus.h"
+#include "../Events/keyboard_event.h"
 #include "../Logger/logger.h"
 #include "../Systems/animation_system.h"
 #include "../Systems/collision_system.h"
 #include "../Systems/damage_system.h"
 #include "../Systems/debug_collision_system.h"
+#include "../Systems/keyboard_movement_system.h"
 #include "../Systems/movement_system.h"
 #include "../Systems/render_system.h"
+
 Game::Game() {
   isRunning = false;
   debugActive = false;
@@ -107,12 +111,13 @@ void Game::loadLevel(int level) {
   registry->addSystem<CollisionSystem>();
   registry->addSystem<DebugCollisionSystem>();
   registry->addSystem<DamageSystem>();
+  registry->addSystem<KeyboardMovementSystem>();
 
   // add assets to AssetMgr
   assetMgr->addTexture(renderer, "tank-image",
                        "./assets/images/tank-tiger-right.png");
   assetMgr->addTexture(renderer, "chopper-animation",
-                       "./assets/images/chopper.png");
+                       "./assets/images/chopper-spritesheet.png");
   // load the tilemap
   assetMgr->addTexture(renderer, "jungle-tilemap",
                        "./assets/tilemaps/jungle.png");
@@ -136,8 +141,11 @@ void Game::loadLevel(int level) {
                                            glm::vec2(1.0, 1.0), 0.0);
   chopper.addComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
   chopper.addComponent<SpriteComponent>("chopper-animation", 32, 32, 1);
-  chopper.addComponent<AnimationComponent>(2, 10, true);
   chopper.addComponent<BoxColliderComponent>(32, 32);
+  chopper.addComponent<AnimationComponent>(2, 10, true);
+  chopper.addComponent<KeyboardControlledComponent>(
+      glm::vec2(0.0, -20.0), glm::vec2(20.0, 0.0), glm::vec2(0.0, 20.0),
+      glm::vec2(-20.0, 0.0));
 }
 
 // glm::vec2 playerPos;
@@ -152,6 +160,7 @@ void Game::procInput() {
         isRunning = false;
         break;
       case SDL_KEYDOWN:
+        eventBus->emitEvent<KeyboardEvent>(sdlEvent.key.keysym.sym);
         if (sdlEvent.key.keysym.sym == SDLK_ESCAPE) {
           isRunning = false;
         } else if (sdlEvent.key.keysym.sym == SDLK_F3) {
@@ -198,6 +207,7 @@ void Game::update() {
   eventBus->reset();
   // subscribe events for all systems
   registry->getSystem<DamageSystem>().subscribeToEvents(eventBus);
+  registry->getSystem<KeyboardMovementSystem>().subscribeToEvents(eventBus);
 
   // update the registry
   registry->update();
