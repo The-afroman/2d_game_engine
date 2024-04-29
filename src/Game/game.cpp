@@ -16,6 +16,7 @@
 #include "../Components/transform_component.h"
 #include "../Events/event_bus.h"
 #include "../Events/keyboard_event.h"
+#include "../Events/window_resize_event.h"
 #include "../Logger/logger.h"
 #include "../Systems/animation_system.h"
 #include "../Systems/camera_system.h"
@@ -50,27 +51,26 @@ void Game::initialize() {
   }
 
   // create the application window
-  SDL_DisplayMode displayMode;
-  SDL_GetCurrentDisplayMode(1, &displayMode);
-  windowW = displayMode.w;
-  windowH = displayMode.h;
-  Logger::info("displayW/H: " + std::to_string(displayMode.w) +
-               std::to_string(displayMode.h) + " windowW/H: " +
-               std::to_string(windowW) + std::to_string(windowH));
-  Uint32 windowFlags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALWAYS_ON_TOP |
-                       SDL_WINDOW_BORDERLESS | SDL_WINDOW_FULLSCREEN;
-  window =
-      SDL_CreateWindow("proto game engine", SDL_WINDOWPOS_CENTERED,
-                       SDL_WINDOWPOS_CENTERED, windowW, windowH, windowFlags);
+  Uint32 windowFlags =
+      SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS;
+  window = SDL_CreateWindow("proto game engine", SDL_WINDOWPOS_CENTERED,
+                            SDL_WINDOWPOS_CENTERED, 800, 600, windowFlags);
   int display = SDL_GetWindowDisplayIndex(window);
-
+  int displayIdx = SDL_GetWindowDisplayIndex(window);
+  SDL_DisplayMode displayMode;
+  SDL_GetCurrentDisplayMode(displayIdx, &displayMode);
+  SDL_GetWindowSize(window, &windowW, &windowH);
+  // windowW = displayMode.w;
+  // windowH = displayMode.h;
+  // Logger::info("displayW/H: " + std::to_string(displayMode.w) + "x" +
+  //              std::to_string(displayMode.h));
   if (!window) {
     Logger::err("Error initializing SDL2 window");
   }
 
   // initialize renderer
-  renderer = SDL_CreateRenderer(
-      window, -1, SDL_RENDERER_ACCELERATED /*| SDL_RENDERER_PRESENTVSYNC*/);
+  Uint32 rendererFlags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
+  renderer = SDL_CreateRenderer(window, -1, rendererFlags);
   if (!renderer) {
     Logger::err("Error initializing SDL2 Renderer");
   }
@@ -191,31 +191,20 @@ void Game::procInput() {
           debugActive = !debugActive;
         }
         break;
+      case SDL_WINDOWEVENT:
+        if (sdlEvent.window.event == SDL_WINDOWEVENT_RESIZED ||
+            sdlEvent.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+          SDL_GetWindowSize(window, &windowW, &windowH);
+          eventBus->emitEvent<WindowResizeEvent>(windowW, windowH, &camera);
+          Logger::info("Resize event triggered window dim: " +
+                       std::to_string(windowW) + "x" + std::to_string(windowH));
+        }
+        break;
     }
   }
 }
 
-void Game::updatePlayer() {
-  // int windowX;
-  // int windowY;
-  // SDL_GetWindowSize(window, &windowX, &windowY);
-  // if (playerPos.x+32 > windowX) {
-  //     playerVel.x *= -1;
-  //     playerPos.x = windowX-32;
-  // } else if (playerPos.x < 0) {
-  //     playerVel.x *= -1;
-  //     playerPos.x = 0;
-  // }
-  // if (playerPos.y+32 > windowY) {
-  //     playerPos.y = windowY-32;
-  //     playerVel.y *= -1;
-  // } else if (playerPos.y < 0) {
-  //     playerPos.y = 0;
-  //     playerVel.y *= -1;
-  // }
-  // playerPos.x += playerVel.x * deltaTime;
-  // playerPos.y += playerVel.y * deltaTime;
-}
+void Game::updatePlayer() {}
 
 void Game::update() {
   // cap game loop update to MAX_FPS
@@ -226,7 +215,9 @@ void Game::update() {
   deltaTime = static_cast<double>(SDL_GetTicks() - prevFrameMillisecs) / 1000.0;
 
   prevFrameMillisecs = SDL_GetTicks();
-
+  // set camera to window W/H in case a resize event occured
+  camera.w = windowW;
+  camera.h = windowH;
   // clear the subscriptions
   eventBus->reset();
   // subscribe events for all systems
