@@ -172,8 +172,6 @@ void Game::loadLevel(int level) {
       glm::vec2(-120.0, 0.0));
 }
 
-// glm::vec2 playerPos;
-// glm::vec2 playerVel;
 void Game::setup() { loadLevel(1); }
 
 void Game::procInput() {
