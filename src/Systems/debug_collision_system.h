@@ -21,8 +21,7 @@ class DebugCollisionSystem : public System {
         auto transform = entity.getComponent<TransformComponent>();
         auto collider = entity.getComponent<BoxColliderComponent>();
         SDL_FRect debugBox = {transform.pos.x + collider.offset.x - camera.x,
-                              transform.pos.y + collider.offset.y - camera.y,
-                              static_cast<float>(collider.width),
+                              transform.pos.y + collider.offset.y - camera.y, static_cast<float>(collider.width),
                               static_cast<float>(collider.height)};
         if (collider.isColliding) {
           SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);

@@ -30,9 +30,7 @@ class EventCallback : public IEventCallback {
   TOwner *ownerInstance;
   CallbackFunction callbackFunction;
 
-  virtual void Call(Event &e) override {
-    std::invoke(callbackFunction, ownerInstance, static_cast<TEvent &>(e));
-  }
+  virtual void Call(Event &e) override { std::invoke(callbackFunction, ownerInstance, static_cast<TEvent &>(e)); }
 
  public:
   EventCallback(TOwner *ownerInstance, CallbackFunction callbackFunction) {
@@ -58,13 +56,11 @@ class EventBus {
   */
 
   template <typename TEvent, typename TOwner>
-  void subscribe(TOwner *ownerInstance,
-                 void (TOwner::*callbackFunction)(TEvent &)) {
+  void subscribe(TOwner *ownerInstance, void (TOwner::*callbackFunction)(TEvent &)) {
     if (!subscribers[typeid(TEvent)].get()) {
       subscribers[typeid(TEvent)] = std::make_unique<HandlerList>();
     }
-    auto subscriber = std::make_unique<EventCallback<TOwner, TEvent>>(
-        ownerInstance, callbackFunction);
+    auto subscriber = std::make_unique<EventCallback<TOwner, TEvent>>(ownerInstance, callbackFunction);
     // need to use std::move in order to change the unique pointer's owner
     subscribers[typeid(TEvent)]->push_back(std::move(subscriber));
   }

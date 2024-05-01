@@ -19,8 +19,7 @@ class DamageSystem : public System {
   }
 
   void onCollision(CollisionEvent& event) {
-    Logger::info("Collision occured with " + std::to_string(event.a.getID()) +
-                 " & " + std::to_string(event.b.getID()));
+    Logger::info("Collision occured with " + std::to_string(event.a.getID()) + " & " + std::to_string(event.b.getID()));
     event.a.kill();
     event.b.kill();
   }

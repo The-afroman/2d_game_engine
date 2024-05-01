@@ -20,9 +20,8 @@ class AnimationSystem : public System {
     for (auto entity : getEntities()) {
       auto &animation = entity.getComponent<AnimationComponent>();
       auto &sprite = entity.getComponent<SpriteComponent>();
-      animation.currentFrame = ((SDL_GetTicks() - animation.startTime) *
-                                animation.frameRate / 1000) %
-                               animation.numFrames;
+      animation.currentFrame =
+          ((SDL_GetTicks() - animation.startTime) * animation.frameRate / 1000) % animation.numFrames;
       sprite.srcRect.x = animation.currentFrame * sprite.width;
     }
   }

@@ -35,9 +35,8 @@ class Game {
   ~Game();
   void initialize();
   void run();
-  void parseMap(std::string mapTextureStr, std::string mapFileStr, int tileW,
-                int tileH, int maxTilesInTextureX, int mapWidth,
-                glm::vec2 scale);
+  void parseMap(std::string mapTextureStr, std::string mapFileStr, int tileW, int tileH, int maxTilesInTextureX,
+                int mapWidth, glm::vec2 scale);
   void loadLevel(int level);
   void setup();
   void procInput();

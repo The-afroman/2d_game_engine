@@ -180,8 +180,7 @@ void Registry::addComponent(Entity entity, TArgs &&...args) {
     componentPools[componentID] = newCPool;
   }
 
-  std::shared_ptr<Pool<TComp>> cPool =
-      static_pointer_cast<Pool<TComp>>(componentPools[componentID]);
+  std::shared_ptr<Pool<TComp>> cPool = static_pointer_cast<Pool<TComp>>(componentPools[componentID]);
 
   if (cPool->getSize() <= entityID) {
     cPool->resize(numEntities);
@@ -192,8 +191,7 @@ void Registry::addComponent(Entity entity, TArgs &&...args) {
 
   entityComponentSignatures[entityID].set(componentID);
 
-  Logger::info("Component id = " + std::to_string(componentID) +
-               " added to entity = " + std::to_string(entityID));
+  Logger::info("Component id = " + std::to_string(componentID) + " added to entity = " + std::to_string(entityID));
 }
 
 template <typename TComp>
@@ -202,8 +200,7 @@ void Registry::removeComponent(Entity entity) {
   const int entityID = entity.getID();
 
   entityComponentSignatures[entityID].reset(componentID);
-  Logger::info("Component id = " + std::to_string(componentID) +
-               " removed from entity = " + std::to_string(entityID));
+  Logger::info("Component id = " + std::to_string(componentID) + " removed from entity = " + std::to_string(entityID));
 }
 
 template <typename TComp>
@@ -221,8 +218,7 @@ TComp &Registry::getComponent(Entity entity) const {
   const auto componentID = Component<TComp>::getID();
   const auto entityID = entity.getID();
 
-  auto cPool =
-      std::static_pointer_cast<Pool<TComp>>(componentPools[componentID]);
+  auto cPool = std::static_pointer_cast<Pool<TComp>>(componentPools[componentID]);
   return cPool->get(entityID);
 }
 
@@ -255,8 +251,7 @@ void System::requireComponent() {
 
 template <typename TSys, typename... TArgs>
 void Registry::addSystem(TArgs &&...args) {
-  std::shared_ptr<TSys> newSystem =
-      std::make_shared<TSys>(std::forward<TArgs>(args)...);
+  std::shared_ptr<TSys> newSystem = std::make_shared<TSys>(std::forward<TArgs>(args)...);
   systems.insert(std::make_pair(std::type_index(typeid(TSys)), newSystem));
 }
 

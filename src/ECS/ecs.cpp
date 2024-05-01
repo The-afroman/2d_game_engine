@@ -14,10 +14,8 @@ void Entity::kill() { registry->removeEntity(*this); }
 void System::addEntity(Entity entity) { entities.push_back(entity); }
 
 void System::removeEntity(Entity entity) {
-  entities.erase(
-      std::remove_if(entities.begin(), entities.end(),
-                     [&entity](Entity &other) { return entity == other; }),
-      entities.end());
+  entities.erase(std::remove_if(entities.begin(), entities.end(), [&entity](Entity &other) { return entity == other; }),
+                 entities.end());
 }
 
 std::vector<Entity> System::getEntities() const { return entities; }

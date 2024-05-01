@@ -9,10 +9,8 @@ struct KeyboardControlledComponent {
   glm::vec2 leftVel;
   glm::vec2 rightVel;
 
-  KeyboardControlledComponent(glm::vec2 upVel = {0.0, 0.0},
-                              glm::vec2 rightVel = {0.0, 0.0},
-                              glm::vec2 downVel = {0.0, 0.0},
-                              glm::vec2 leftVel = {0.0, 0.0}) {
+  KeyboardControlledComponent(glm::vec2 upVel = {0.0, 0.0}, glm::vec2 rightVel = {0.0, 0.0},
+                              glm::vec2 downVel = {0.0, 0.0}, glm::vec2 leftVel = {0.0, 0.0}) {
     this->upVel = upVel;
     this->downVel = downVel;
     this->leftVel = leftVel;

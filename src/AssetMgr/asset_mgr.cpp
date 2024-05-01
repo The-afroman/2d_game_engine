@@ -19,8 +19,7 @@ void AssetMgr::clearAssets() {
   textures.clear();
 }
 
-void AssetMgr::addTexture(SDL_Renderer *renderer, const std::string &assetId,
-                          const std::string &filePath) {
+void AssetMgr::addTexture(SDL_Renderer *renderer, const std::string &assetId, const std::string &filePath) {
   SDL_Surface *surface = IMG_Load(filePath.c_str());
   SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
   SDL_FreeSurface(surface);
@@ -29,6 +28,4 @@ void AssetMgr::addTexture(SDL_Renderer *renderer, const std::string &assetId,
   Logger::info("texture: " + assetId + " added to AssetMgr");
 }
 
-SDL_Texture *AssetMgr::getTexture(const std::string assetId) {
-  return textures[assetId];
-}
+SDL_Texture *AssetMgr::getTexture(const std::string assetId) { return textures[assetId]; }

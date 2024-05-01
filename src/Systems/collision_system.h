@@ -15,8 +15,7 @@ class CollisionSystem : public System {
     requireComponent<BoxColliderComponent>();
   }
 
-  bool isAABBCollision(double aX, double aY, double aW, double aH, double bX,
-                       double bY, double bW, double bH) {
+  bool isAABBCollision(double aX, double aY, double aW, double aH, double bX, double bY, double bW, double bH) {
     return aX < bX + bW && aX + aW > bX && aY < bY + bH && aY + aH > bY;
   }
 
@@ -31,12 +30,12 @@ class CollisionSystem : public System {
         if (*i == *j) {
           continue;
         }
-
         // check for collisions
         auto transformI = i->getComponent<TransformComponent>();
         auto transformJ = j->getComponent<TransformComponent>();
         auto colliderI = i->getComponent<BoxColliderComponent>();
         auto colliderJ = j->getComponent<BoxColliderComponent>();
+        // clang-format off
         if (isAABBCollision(transformI.pos.x + colliderI.offset.x,
                             transformI.pos.y + colliderI.offset.y,
                             colliderI.width, colliderI.height, transformJ.pos.x,
@@ -44,6 +43,7 @@ class CollisionSystem : public System {
                             colliderJ.height)) {
           Logger::info("Collision of Entities: " + std::to_string(i->getID()) +
                        ", " + std::to_string(j->getID()));
+          // clang-format on
           i->getComponent<BoxColliderComponent>().isColliding = true;
           j->getComponent<BoxColliderComponent>().isColliding = true;
           eventBus->emitEvent<CollisionEvent>(*i, *j);

@@ -21,7 +21,7 @@ run:
 	./$(obj_name)
 
 format:
-	clang-format -style='{BasedOnStyle: Google}' -i $(src_files) $(header_files)
+	clang-format -style='{BasedOnStyle: Google, ColumnLimit: 120}' -i $(src_files) $(header_files)
 
 all: format build run
 

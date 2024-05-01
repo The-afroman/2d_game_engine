@@ -16,8 +16,7 @@ class AssetMgr {
   ~AssetMgr();
 
   void clearAssets();
-  void addTexture(SDL_Renderer *renderer, const std::string &assetId,
-                  const std::string &filePath);
+  void addTexture(SDL_Renderer *renderer, const std::string &assetId, const std::string &filePath);
   SDL_Texture *getTexture(const std::string assetId);
 };
 

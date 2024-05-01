@@ -14,8 +14,7 @@ class WindowResizeEvent : public Event {
   int windowW;
   int windowH;
   SDL_Rect* camera;
-  WindowResizeEvent(int windowW, int windowH, SDL_Rect* camera)
-      : windowW(windowW), windowH(windowH), camera(camera) {}
+  WindowResizeEvent(int windowW, int windowH, SDL_Rect* camera) : windowW(windowW), windowH(windowH), camera(camera) {}
 };
 
 #endif

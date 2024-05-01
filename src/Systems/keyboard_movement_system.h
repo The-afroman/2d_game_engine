@@ -19,10 +19,10 @@ class KeyboardMovementSystem : public System {
 
   void update() {}
   void subscribeToEvents(std::unique_ptr<EventBus>& eventBus) {
-    eventBus->subscribe<KeyboardEvent>(this,
-                                       &KeyboardMovementSystem::onKeypress);
+    // clang-format off
+    eventBus->subscribe<KeyboardEvent>(this, &KeyboardMovementSystem::onKeypress);
   }
-
+  // clang-format on
   void onKeypress(KeyboardEvent& event) {
     // change velocity of controlled sprite entity
     for (auto entity : getEntities()) {

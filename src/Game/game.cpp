@@ -49,21 +49,19 @@ void Game::initialize() {
     Logger::err("Error init SDL2");
     return;
   }
-
+  // clang-format off
   // create the application window
-  Uint32 windowFlags =
-      SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS;
-  window = SDL_CreateWindow("proto game engine", SDL_WINDOWPOS_CENTERED,
-                            SDL_WINDOWPOS_CENTERED, 800, 600, windowFlags);
-  int display = SDL_GetWindowDisplayIndex(window);
+  Uint32 windowFlags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS;
+  window = SDL_CreateWindow("proto game engine",
+                            SDL_WINDOWPOS_CENTERED,
+                            SDL_WINDOWPOS_CENTERED,
+                            800, 600,
+                            windowFlags);
+  // clang-format on
   int displayIdx = SDL_GetWindowDisplayIndex(window);
   SDL_DisplayMode displayMode;
   SDL_GetCurrentDisplayMode(displayIdx, &displayMode);
   SDL_GetWindowSize(window, &windowW, &windowH);
-  // windowW = displayMode.w;
-  // windowH = displayMode.h;
-  // Logger::info("displayW/H: " + std::to_string(displayMode.w) + "x" +
-  //              std::to_string(displayMode.h));
   if (!window) {
     Logger::err("Error initializing SDL2 window");
   }
@@ -91,9 +89,14 @@ void Game::run() {
   }
 }
 
-void Game::parseMap(std::string mapTextureStr, std::string mapFileStr,
-                    int tileW, int tileH, int maxTilesInTextureX, int mapWidth,
+// clang-format off
+void Game::parseMap(std::string mapTextureStr,
+                    std::string mapFileStr,
+                    int tileW, int tileH,
+                    int maxTilesInTextureX,
+                    int mapWidth,
                     glm::vec2 scale) {
+  // clang-format on
   std::ifstream mapFile;
   mapFile.open(mapFileStr);
   if (!mapFile.is_open()) {
@@ -116,8 +119,7 @@ void Game::parseMap(std::string mapTextureStr, std::string mapFileStr,
       glm::vec2 pos = {posx, posy};
       pos *= scale;
       Logger::info(std::to_string(posx) + " " + std::to_string(posy));
-      tile.addComponent<SpriteComponent>(mapTextureStr, tileW, tileH, 0,
-                                         column * tileW, row * tileH);
+      tile.addComponent<SpriteComponent>(mapTextureStr, tileW, tileH, 0, column * tileW, row * tileH);
       tile.addComponent<TransformComponent>(pos, scale, 0.0);
       tileidx++;
     }
@@ -136,40 +138,34 @@ void Game::loadLevel(int level) {
   registry->addSystem<CameraSystem>();
 
   // add assets to AssetMgr
-  assetMgr->addTexture(renderer, "tank-image",
-                       "./assets/images/tank-tiger-right.png");
-  assetMgr->addTexture(renderer, "chopper-animation",
-                       "./assets/images/chopper-spritesheet.png");
+  assetMgr->addTexture(renderer, "tank-image", "./assets/images/tank-tiger-right.png");
+  assetMgr->addTexture(renderer, "chopper-animation", "./assets/images/chopper-spritesheet.png");
   // load the tilemap
-  assetMgr->addTexture(renderer, "jungle-tilemap",
-                       "./assets/tilemaps/jungle.png");
+  assetMgr->addTexture(renderer, "jungle-tilemap", "./assets/tilemaps/jungle.png");
   glm::vec2 mapScale = {5.0, 5.0};
   int tileSize = 32;
   int maxTilesInTextureX = 10;
   int mapWidthSrc = 800;
   mapW = mapWidthSrc * mapScale.x;
   mapH = 640 * mapScale.x;
-  parseMap("jungle-tilemap", "./assets/tilemaps/jungle.map", tileSize, tileSize,
-           maxTilesInTextureX, mapWidthSrc, mapScale);
+  parseMap("jungle-tilemap", "./assets/tilemaps/jungle.map", tileSize, tileSize, maxTilesInTextureX, mapWidthSrc,
+           mapScale);
   // create entity
   Entity tank = registry->createEntity();
-  tank.addComponent<TransformComponent>(glm::vec2(10.0, 10.0),
-                                        glm::vec2(1.0, 1.0), 0.0);
+  tank.addComponent<TransformComponent>(glm::vec2(10.0, 10.0), glm::vec2(1.0, 1.0), 0.0);
   tank.addComponent<RigidBodyComponent>(glm::vec2(10.0, 10.0));
   tank.addComponent<SpriteComponent>("tank-image", 32, 32, 1);
   tank.addComponent<BoxColliderComponent>(32, 32);
 
   Entity chopper = registry->createEntity();
   chopper.addComponent<CameraComponent>();
-  chopper.addComponent<TransformComponent>(glm::vec2(150.0, 150.0),
-                                           glm::vec2(1.0, 1.0), 0.0);
+  chopper.addComponent<TransformComponent>(glm::vec2(150.0, 150.0), glm::vec2(1.0, 1.0), 0.0);
   chopper.addComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
   chopper.addComponent<SpriteComponent>("chopper-animation", 32, 32, 1);
   chopper.addComponent<BoxColliderComponent>(32, 32);
   chopper.addComponent<AnimationComponent>(2, 10, true);
-  chopper.addComponent<KeyboardControlledComponent>(
-      glm::vec2(0.0, -120.0), glm::vec2(120.0, 0.0), glm::vec2(0.0, 120.0),
-      glm::vec2(-120.0, 0.0));
+  chopper.addComponent<KeyboardControlledComponent>(glm::vec2(0.0, -120.0), glm::vec2(120.0, 0.0),
+                                                    glm::vec2(0.0, 120.0), glm::vec2(-120.0, 0.0));
 }
 
 void Game::setup() { loadLevel(1); }
@@ -190,12 +186,10 @@ void Game::procInput() {
         }
         break;
       case SDL_WINDOWEVENT:
-        if (sdlEvent.window.event == SDL_WINDOWEVENT_RESIZED ||
-            sdlEvent.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+        if (sdlEvent.window.event == SDL_WINDOWEVENT_RESIZED || sdlEvent.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
           SDL_GetWindowSize(window, &windowW, &windowH);
           eventBus->emitEvent<WindowResizeEvent>(windowW, windowH, &camera);
-          Logger::info("Resize event triggered window dim: " +
-                       std::to_string(windowW) + "x" + std::to_string(windowH));
+          Logger::info("Resize event triggered window dim: " + std::to_string(windowW) + "x" + std::to_string(windowH));
         }
         break;
     }
@@ -240,8 +234,7 @@ void Game::render() {
   registry->getSystem<RenderSystem>().sortByZIdx();
   // render
   registry->getSystem<RenderSystem>().update(renderer, assetMgr, camera);
-  registry->getSystem<DebugCollisionSystem>().update(renderer, camera,
-                                                     debugActive);
+  registry->getSystem<DebugCollisionSystem>().update(renderer, camera, debugActive);
   /*
   swaps back and front buffers, the back buffer is what
   we were drawing to prior to presenting
