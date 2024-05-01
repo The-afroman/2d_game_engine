@@ -8,6 +8,7 @@
 #include "../Components/sprite_component.h"
 #include "../Components/transform_component.h"
 #include "../ECS/ecs.h"
+#include "../AssetMgr/asset_mgr.h"
 #include "../Logger/logger.h"
 
 class RenderSystem : public System {
