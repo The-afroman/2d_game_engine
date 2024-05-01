@@ -4,14 +4,15 @@
 #include <SDL2/SDL_image.h>
 
 #include <fstream>
+#include <glm/fwd.hpp>
 #include <glm/glm.hpp>
-#include <iostream>
 #include <memory>
 #include <sstream>
 
 #include "../Components/animation_component.h"
 #include "../Components/box_collider_component.h"
 #include "../Components/keyboard_controlled_component.h"
+#include "../Components/projectile_emitter_component.h"
 #include "../Components/rigid_body_component.h"
 #include "../Components/transform_component.h"
 #include "../Events/event_bus.h"
@@ -25,6 +26,7 @@
 #include "../Systems/debug_collision_system.h"
 #include "../Systems/keyboard_movement_system.h"
 #include "../Systems/movement_system.h"
+#include "../Systems/projectile_system.h"
 #include "../Systems/render_system.h"
 
 int Game::windowW;
@@ -136,10 +138,12 @@ void Game::loadLevel(int level) {
   registry->addSystem<DamageSystem>();
   registry->addSystem<KeyboardMovementSystem>();
   registry->addSystem<CameraSystem>();
+  registry->addSystem<ProjectileSystem>();
 
   // add assets to AssetMgr
   assetMgr->addTexture(renderer, "tank-image", "./assets/images/tank-tiger-right.png");
   assetMgr->addTexture(renderer, "chopper-animation", "./assets/images/chopper-spritesheet.png");
+  assetMgr->addTexture(renderer, "bullet-image", "./assets/images/bullet.png");
   // load the tilemap
   assetMgr->addTexture(renderer, "jungle-tilemap", "./assets/tilemaps/jungle.png");
   glm::vec2 mapScale = {5.0, 5.0};
@@ -164,6 +168,7 @@ void Game::loadLevel(int level) {
   chopper.addComponent<SpriteComponent>("chopper-animation", 32, 32, 1);
   chopper.addComponent<BoxColliderComponent>(32, 32);
   chopper.addComponent<AnimationComponent>(2, 10, true);
+  chopper.addComponent<ProjectileEmitterComponent>(glm::vec2(500.0, 0), 100);
   chopper.addComponent<KeyboardControlledComponent>(glm::vec2(0.0, -120.0), glm::vec2(120.0, 0.0),
                                                     glm::vec2(0.0, 120.0), glm::vec2(-120.0, 0.0));
 }
@@ -222,7 +227,8 @@ void Game::update() {
   registry->getSystem<MovementSystem>().update(deltaTime);
   registry->getSystem<CameraSystem>().update(camera);
   registry->getSystem<AnimationSystem>().update();
-  registry->getSystem<CollisionSystem>().update(eventBus);
+  // registry->getSystem<CollisionSystem>().update(eventBus);
+  registry->getSystem<ProjectileSystem>().update(registry);
 
   updatePlayer();
 }

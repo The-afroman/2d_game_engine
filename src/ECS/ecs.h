@@ -210,7 +210,7 @@ bool Registry::hasComponent(Entity entity) const {
 
   Signature entitySig = entityComponentSignatures[entityID];
 
-  return entitySig & componentID;
+  return entitySig.test(componentID);
 }
 
 template <typename TComp>
