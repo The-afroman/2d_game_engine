@@ -19,19 +19,25 @@ class CameraSystem : public System {
   void update(SDL_Rect& camera) {
     for (auto entity : getEntities()) {
       auto& transformComp = entity.getComponent<TransformComponent>();
-      if (transformComp.pos.x - camera.w / 2 > 0 &&
-          camera.w / 2 + transformComp.pos.x < Game::mapW) {
-        camera.x = transformComp.pos.x - camera.w / 2;
+      Logger::info("player: " + std::to_string(transformComp.pos.x) + " " +
+                   std::to_string(transformComp.pos.y));
+      Logger::info("camera: " + std::to_string(camera.x) + " " +
+                   std::to_string(camera.y));
+      if (transformComp.pos.x - (camera.w / 2) > 0 &&
+          (camera.w / 2) + transformComp.pos.x < Game::mapW) {
+        camera.x = transformComp.pos.x - (camera.w / 2);
       }
-      if (transformComp.pos.y - camera.h / 2 > 0 &&
-          camera.h / 2 + transformComp.pos.y < Game::mapH) {
-        camera.y = transformComp.pos.y - camera.h / 2;
+      if (transformComp.pos.y - (camera.h / 2) > 0 &&
+          (camera.h / 2) + transformComp.pos.y < Game::mapH) {
+        camera.y = transformComp.pos.y - (camera.h / 2);
       }
 
       camera.x = camera.x < 0 ? 0 : camera.x;
       camera.y = camera.y < 0 ? 0 : camera.y;
-      camera.x = camera.x > camera.w ? camera.w : camera.x;
-      camera.y = camera.y > camera.h ? camera.h : camera.y;
+      camera.x =
+          camera.x > Game::mapW - camera.w ? Game::mapW - camera.w : camera.x;
+      camera.y =
+          camera.y > Game::mapH - camera.h ? Game::mapH - camera.h : camera.y;
     }
   }
 };

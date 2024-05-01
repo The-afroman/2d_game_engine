@@ -143,7 +143,7 @@ void Game::loadLevel(int level) {
   // load the tilemap
   assetMgr->addTexture(renderer, "jungle-tilemap",
                        "./assets/tilemaps/jungle.png");
-  glm::vec2 mapScale = {4.0, 4.0};
+  glm::vec2 mapScale = {5.0, 5.0};
   int tileSize = 32;
   int maxTilesInTextureX = 10;
   int mapWidthSrc = 800;
