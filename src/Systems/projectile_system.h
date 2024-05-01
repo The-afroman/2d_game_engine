@@ -32,8 +32,8 @@ class ProjectileSystem : public System {
         // add a new projectile to the registry
         glm::vec2 projPos = transformComp.pos;
         if (entity.hasComponent<SpriteComponent>()) {
-          projPos.x += entity.getComponent<SpriteComponent>().width / 2.0;
-          projPos.y += entity.getComponent<SpriteComponent>().height / 2.0;
+          projPos.x += transformComp.scale.x * entity.getComponent<SpriteComponent>().width / 2.0;
+          projPos.y += transformComp.scale.y * entity.getComponent<SpriteComponent>().height / 2.0;
         }
         Entity projectile = registry->createEntity();
         projectile.addComponent<TransformComponent>(projPos, glm::vec2(1.0, 1.0));
