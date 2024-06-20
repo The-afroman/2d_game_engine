@@ -38,9 +38,9 @@ class CollisionSystem : public System {
         // clang-format off
         if (isAABBCollision(transformI.pos.x + colliderI.offset.x,
                             transformI.pos.y + colliderI.offset.y,
-                            colliderI.width, colliderI.height, transformJ.pos.x,
-                            transformJ.pos.y, colliderJ.width,
-                            colliderJ.height)) {
+                            colliderI.width, colliderI.height, 
+                            transformJ.pos.x, transformJ.pos.y,
+                            colliderJ.width, colliderJ.height)) {
           Logger::info("Collision of Entities: " + std::to_string(i->getID()) +
                        ", " + std::to_string(j->getID()));
           // clang-format on

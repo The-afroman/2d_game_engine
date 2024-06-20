@@ -27,8 +27,8 @@ class CameraSystem : public System {
         transformCenter.x += transformComp.scale.x * entity.getComponent<SpriteComponent>().width / 2.0;
         transformCenter.y += transformComp.scale.y * entity.getComponent<SpriteComponent>().height / 2.0;
       }
-      Logger::info("player: " + std::to_string(transformCenter.x) + " " + std::to_string(transformComp.pos.y));
-      Logger::info("camera: " + std::to_string(camera.x) + " " + std::to_string(camera.y));
+      // Logger::info("player: " + std::to_string(transformCenter.x) + " " + std::to_string(transformComp.pos.y));
+      // Logger::info("camera: " + std::to_string(camera.x) + " " + std::to_string(camera.y));
       if (transformCenter.x - (camera.w / 2.0) > 0 && (camera.w / 2.0) + transformComp.pos.x < Game::mapW) {
         camera.x = transformCenter.x - (camera.w / 2.0);
       }

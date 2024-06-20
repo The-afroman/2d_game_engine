@@ -1,6 +1,7 @@
 #ifndef MOVEMENTSYSTEM_H
 #define MOVEMENTSYSTEM_H
 
+#include "../Components/projectile_emitter_component.h"
 #include "../Components/rigid_body_component.h"
 #include "../Components/transform_component.h"
 #include "../ECS/ecs.h"
@@ -21,10 +22,6 @@ class MovementSystem : public System {
       const auto rbody = entity.getComponent<RigidBodyComponent>();
       transform.pos.x += rbody.velocity.x * deltaTime;
       transform.pos.y += rbody.velocity.y * deltaTime;
-
-      // Logger::info(std::to_string(entity.getID()) + " position is now " +
-      //              std::to_string(transform.pos.x) + ", " +
-      //              std::to_string(transform.pos.y));
     }
   }
 };
