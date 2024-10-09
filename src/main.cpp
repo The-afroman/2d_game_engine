@@ -6,7 +6,7 @@
 
 #include <glm/glm.hpp>
 #include <iostream>
-#include <sol/sol.hpp>
+// #include <sol/sol.hpp>
 
 #include "Game/game.h"
 

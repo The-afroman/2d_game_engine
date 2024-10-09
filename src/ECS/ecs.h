@@ -33,7 +33,7 @@ class Entity {
   int id;
 
  public:
-  Entity(int id) : id(id){};
+  Entity(int id) : id(id) {};
   Entity(const Entity &entity) = default;
   int getID() const;
 

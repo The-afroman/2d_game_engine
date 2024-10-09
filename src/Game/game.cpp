@@ -53,7 +53,7 @@ void Game::initialize() {
   }
   // clang-format off
   // create the application window
-  Uint32 windowFlags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS;
+  Uint32 windowFlags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL; //| SDL_WINDOW_BORDERLESS;
   window = SDL_CreateWindow("proto game engine",
                             SDL_WINDOWPOS_CENTERED,
                             SDL_WINDOWPOS_CENTERED,
@@ -227,7 +227,7 @@ void Game::update() {
   registry->getSystem<MovementSystem>().update(deltaTime);
   registry->getSystem<CameraSystem>().update(camera);
   registry->getSystem<AnimationSystem>().update();
-  // registry->getSystem<CollisionSystem>().update(eventBus);
+  registry->getSystem<CollisionSystem>().update(eventBus);
   registry->getSystem<ProjectileSystem>().update(registry);
 
   updatePlayer();

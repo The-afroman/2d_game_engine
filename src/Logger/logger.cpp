@@ -7,7 +7,7 @@
 
 std::vector<LogEntry> Logger::allLogs;
 
-void getDateTime(char *tbuffer, int tbuffSize) {
+void getDateTime(char *tbuffer, std::size_t tbuffSize) {
   // current date/time based on current system
   time_t now = time(0);
   // convert now to string form
@@ -16,8 +16,8 @@ void getDateTime(char *tbuffer, int tbuffSize) {
 }
 
 void Logger::info(const std::string message) {
-  char datetime[40];
-  getDateTime(datetime, 40);
+  char datetime[23];
+  getDateTime(datetime, 23);
   std::string lmessage = std::format("INFO: {} - {}", datetime, message);
   LogEntry entry;
   entry.type = INFO;
@@ -27,8 +27,8 @@ void Logger::info(const std::string message) {
 }
 
 void Logger::err(const std::string message) {
-  char datetime[40];
-  getDateTime(datetime, 40);
+  char datetime[23];
+  getDateTime(datetime, 23);
   std::string lmessage = std::format("\033[93mERR:  {} - {}\033[0m", datetime, message);
   LogEntry entry;
   entry.type = ERROR;
