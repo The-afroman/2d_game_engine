@@ -227,8 +227,8 @@ void Game::update() {
   registry->getSystem<MovementSystem>().update(deltaTime);
   registry->getSystem<CameraSystem>().update(camera);
   registry->getSystem<AnimationSystem>().update();
-  registry->getSystem<CollisionSystem>().update(eventBus);
   registry->getSystem<ProjectileSystem>().update(registry);
+  registry->getSystem<CollisionSystem>().update(eventBus);
 
   updatePlayer();
 }

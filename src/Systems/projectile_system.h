@@ -5,6 +5,7 @@
 #include <SDL2/SDL_timer.h>
 
 #include <algorithm>
+#include <cmath>
 #include <glm/fwd.hpp>
 #include <memory>
 
@@ -21,19 +22,32 @@ class ProjectileSystem : public System {
   ProjectileSystem() {
     requireComponent<ProjectileEmitterComponent>();
     requireComponent<TransformComponent>();
+    requireComponent<RigidBodyComponent>();
   }
 
   void update(std::unique_ptr<Registry>& registry) {
     for (auto entity : getEntities()) {
       auto& projectileComp = entity.getComponent<ProjectileEmitterComponent>();
       auto& transformComp = entity.getComponent<TransformComponent>();
-
+      auto& rbComp = entity.getComponent<RigidBodyComponent>();
       if (SDL_GetTicks() - projectileComp.lastEmissionTime > projectileComp.repeatFreq) {
         // add a new projectile to the registry
         glm::vec2 projPos = transformComp.pos;
         if (entity.hasComponent<SpriteComponent>()) {
           projPos.x += transformComp.scale.x * entity.getComponent<SpriteComponent>().width / 2.0;
           projPos.y += transformComp.scale.y * entity.getComponent<SpriteComponent>().height / 2.0;
+          Uint32 offset = 5;
+          if (projectileComp.projectileVel.x > 0) {
+            projPos.x += (offset + transformComp.scale.x * entity.getComponent<SpriteComponent>().width / 2.0);
+          } else if (projectileComp.projectileVel.x < 0) {
+            projPos.x -= (offset + transformComp.scale.x * entity.getComponent<SpriteComponent>().width / 2.0);
+          }
+
+          if (projectileComp.projectileVel.y > 0) {
+            projPos.y += (offset + transformComp.scale.y * entity.getComponent<SpriteComponent>().height / 2.0);
+          } else if (projectileComp.projectileVel.y < 0) {
+            projPos.y -= (offset + transformComp.scale.y * entity.getComponent<SpriteComponent>().height / 2.0);
+          }
         }
         Entity projectile = registry->createEntity();
         projectile.addComponent<TransformComponent>(projPos, glm::vec2(1.0, 1.0));

@@ -10,7 +10,7 @@
 struct ProjectileEmitterComponent {
   glm::vec2 projectileVel;
   Uint32 repeatFreq;
-  int projectileDuration;
+  Uint32 projectileDuration;
   int hitPercentDamage;
   Uint32 lastEmissionTime;
   bool isFriendly;
