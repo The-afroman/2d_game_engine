@@ -19,7 +19,7 @@ ifeq ($(UNAME_S), Darwin)
 	linker_flags := $(osx_libs) $(linker_flags_linux)
 	include_path += $(osx_include)
 else
-	linker_flags := $(linux_flags_linux)
+	linker_flags := $(linker_flags_linux)
 endif
 
 build:
