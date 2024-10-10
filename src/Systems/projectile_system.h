@@ -29,24 +29,25 @@ class ProjectileSystem : public System {
     for (auto entity : getEntities()) {
       auto& projectileComp = entity.getComponent<ProjectileEmitterComponent>();
       auto& transformComp = entity.getComponent<TransformComponent>();
-      auto& rbComp = entity.getComponent<RigidBodyComponent>();
       if (SDL_GetTicks() - projectileComp.lastEmissionTime > projectileComp.repeatFreq) {
         // add a new projectile to the registry
         glm::vec2 projPos = transformComp.pos;
         if (entity.hasComponent<SpriteComponent>()) {
-          projPos.x += transformComp.scale.x * entity.getComponent<SpriteComponent>().width / 2.0;
-          projPos.y += transformComp.scale.y * entity.getComponent<SpriteComponent>().height / 2.0;
+          double halfW = transformComp.scale.x * entity.getComponent<SpriteComponent>().width / 2.0;
+          double halfH = transformComp.scale.y * entity.getComponent<SpriteComponent>().height / 2.0;
+          projPos.x += halfW;
+          projPos.y += halfH;
           Uint32 offset = 5;
           if (projectileComp.projectileVel.x > 0) {
-            projPos.x += (offset + transformComp.scale.x * entity.getComponent<SpriteComponent>().width / 2.0);
+            projPos.x += (offset + halfW);
           } else if (projectileComp.projectileVel.x < 0) {
-            projPos.x -= (offset + transformComp.scale.x * entity.getComponent<SpriteComponent>().width / 2.0);
+            projPos.x -= (offset + halfW);
           }
 
           if (projectileComp.projectileVel.y > 0) {
-            projPos.y += (offset + transformComp.scale.y * entity.getComponent<SpriteComponent>().height / 2.0);
+            projPos.y += (offset + halfH);
           } else if (projectileComp.projectileVel.y < 0) {
-            projPos.y -= (offset + transformComp.scale.y * entity.getComponent<SpriteComponent>().height / 2.0);
+            projPos.y -= (offset + halfH);
           }
         }
         Entity projectile = registry->createEntity();
